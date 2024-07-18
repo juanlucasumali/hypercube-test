@@ -1,20 +1,23 @@
 // app/Scene.tsx
 'use client'
 
+
 import React, { useRef, useState, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import { useSpring, animated, config } from '@react-spring/three'
-import { Mesh } from 'three'
+import * as THREE from 'three'
+
+const MOUSE_PEEK = 1;
 
 function Box(props: any) {
-    const ref = useRef<Mesh>(null!);   
+    const ref = useRef<THREE.Mesh>(null!);   
     const [hovered, setHover] = useState(false)
     const [rotate, setRotate] = useState(0)
 
     const { scale, color } = useSpring({
         scale: hovered ? 1.5 : 1,
-        color: hovered ? 'white' : props.color || '#ff9900',
+        color: hovered ? props.color : 'white' || '#ff9900',
         config: config.wobbly
     })
 
@@ -43,19 +46,46 @@ function Box(props: any) {
   )
 }
 
+function MousePeekEffect() {
+  const { camera } = useThree()
+  const [rotation, setRotation] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const updateMousePosition = (e: any) => {
+      setRotation({
+        x: ((e.clientY / window.innerHeight) * 2 - 1) * Math.PI / 16,
+        y: ((e.clientX / window.innerWidth) * 2 - 1) * Math.PI / 16
+      })
+    }
+
+    window.addEventListener('mousemove', updateMousePosition)
+
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition)
+    }
+  }, [])
+
+  useFrame(() => {
+    camera.rotation.y = -THREE.MathUtils.lerp(camera.rotation.y, rotation.y, MOUSE_PEEK)
+    camera.rotation.x = -THREE.MathUtils.lerp(camera.rotation.x, rotation.x, MOUSE_PEEK)
+  })
+
+  return null
+}
+
 export default function Scene() {
-  const [text, setText] = useState('Welcome to 3D Interaction')
+  const [text, setText] = useState('CONSIDER THIS')
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setText('Hover over a cube!')
+      setText('Move your mouse to peek around!')
     }, 2000)
     return () => clearTimeout(timer)
   }, [])
 
   return (
-    <Canvas>
-      <OrbitControls />
+    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <MousePeekEffect />
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} />
