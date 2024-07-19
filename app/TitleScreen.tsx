@@ -10,7 +10,7 @@ interface TitleScreenProps {
 
 export default function TitleScreen({ onPlay, onAbout }: TitleScreenProps) {
   return (
-    <>
+    <group position={[0, 0, -5]}>
       <Text
         position={[0, 1, 0]}
         fontSize={1}
@@ -46,6 +46,6 @@ export default function TitleScreen({ onPlay, onAbout }: TitleScreenProps) {
           About
         </Text>
       </group>
-    </>
+    </group>
   )
 }

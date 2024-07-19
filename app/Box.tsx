@@ -16,9 +16,11 @@ export default function Box({ position, color, onHover, gameState }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false)
 
-  const { scale, positionX } = useSpring({
+  const { scale, positionX, positionY, positionZ } = useSpring({
     scale: hovered ? 1.5 : 1,
-    positionX: gameState === 'play' ? position[0] : -20,
+    positionX: position[0],
+    positionY: position[1],
+    positionZ: position[2],
     config: config.wobbly
   })
 
@@ -30,8 +32,8 @@ export default function Box({ position, color, onHover, gameState }: BoxProps) {
     <animated.mesh
       ref={ref}
       position-x={positionX}
-      position-y={position[1]}
-      position-z={position[2]}
+      position-y={positionY}
+      position-z={positionZ}
       scale={scale}
       onPointerOver={() => { setHover(true); onHover(); }}
       onPointerOut={() => setHover(false)}
