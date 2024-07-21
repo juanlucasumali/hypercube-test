@@ -83,7 +83,7 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                 Where would you like to travel to today?
             </Text>
             <Text 
-                position={[0, 2, 0]}
+                position={[0, 1.5, 0.5]}
                 color="black" 
                 anchorX="center" 
                 anchorY="middle"
