@@ -21,6 +21,8 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
   const [hovered, setHover] = useState(false)
   const portalMaterial = useRef<PortalMaterialType>(null);
   const roomRef = useRef<THREE.Group>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const boxRef = useRef<THREE.BoxGeometry>(null!);
 
   // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
@@ -35,27 +37,38 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
       if (roomRef.current) {
           roomRef.current.rotation.y = -rotation.get()
       }
+      if (portalMaterial.current) {
+        portalMaterial.current.blend = THREE.MathUtils.lerp(
+          portalMaterial.current.blend,
+          isOpen ? 1 : 0,
+          0.1
+        )
+      }
   })
 
   return (
-    <animated.mesh
-      ref={ref}
+    <animated.group
       position-x={positionX}
       position-y={positionY}
       position-z={positionZ}
       scale={scale}
-      onPointerOver={() => { setHover(true); onHover(); }}
-      onPointerOut={() => setHover(false)}
     >
-      <boxGeometry args={[1.5, 1.5, 1.5]} />
-      <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
+      <mesh
+        ref={ref}
+        onPointerOver={() => { setHover(true); onHover(); }}
+        onPointerOut={() => setHover(false)}
+        onDoubleClick={() => setIsOpen(!isOpen)}
+      >
+        <boxGeometry args={[1.5, 1.5, 1.5]} />
+        <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
           <color attach="background" args={[color]} />
-          {/* <group position={[0, 0, -5]}> */}
-          <group ref={roomRef}>
-            {room}
-          </group>
-          {/* </group> */}
+          <animated.group scale-x={scale.to(s => 1 / s)} scale-y={scale.to(s => 1 / s)} scale-z={scale.to(s => 1 / s)}>
+            <group ref={roomRef}>
+              {room}
+            </group>
+          </animated.group>
         </MeshPortalMaterial>
-    </animated.mesh>
+      </mesh>
+    </animated.group>
   )
 }
