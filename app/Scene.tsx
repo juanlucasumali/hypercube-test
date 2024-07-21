@@ -8,6 +8,8 @@ import TitleScreen from './TitleScreen'
 import PlayScreen from './PlayScreen'
 import AboutScreen from './AboutScreen'
 import MousePeekEffect from './MousePeekEffect'
+import { EffectComposer, Pixelation } from "@react-three/postprocessing";
+import { Suspense } from "react";
 
 export default function Scene() {
   const [gameState, setGameState] = useState('title')
@@ -26,15 +28,20 @@ export default function Scene() {
 
   return (
     <Canvas camera={{ position: [0, 0, 0], fov: 100 }}>
-      <MousePeekEffect />
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
-      <RotatingGroup gameState={gameState}>
-        {/* <TitleScreen onPlay={handlePlay} onAbout={handleAbout} /> */}
-        <PlayScreen onBack={handleBack} gameState={gameState} />
-        {/* <AboutScreen onBack={handleBack} /> */}
-      </RotatingGroup>
+      <Suspense fallback={null}>
+        <MousePeekEffect />
+        <ambientLight intensity={0.5} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+        <pointLight position={[-10, -10, -10]} />
+        <RotatingGroup gameState={gameState}>
+          {/* <TitleScreen onPlay={handlePlay} onAbout={handleAbout} /> */}
+          <PlayScreen onBack={handleBack} gameState={gameState} />
+          {/* <AboutScreen onBack={handleBack} /> */}
+        </RotatingGroup>
+        <EffectComposer>
+          <Pixelation granularity={5} />
+        </EffectComposer>
+      </Suspense>
     </Canvas>
   )
 }

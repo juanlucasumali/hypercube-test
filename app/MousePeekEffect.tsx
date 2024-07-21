@@ -27,7 +27,7 @@ export default function MousePeekEffect() {
 
   useFrame(() => {
     camera.rotation.y = -THREE.MathUtils.lerp(camera.rotation.y, rotation.y, MOUSE_PEEK)
-    camera.rotation.x = -THREE.MathUtils.lerp(camera.rotation.x, rotation.x, MOUSE_PEEK)
+    camera.rotation.x = THREE.MathUtils.lerp(camera.rotation.x, rotation.x, MOUSE_PEEK)
   })
 
   return null

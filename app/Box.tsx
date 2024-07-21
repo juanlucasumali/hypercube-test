@@ -26,7 +26,7 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
 
   // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
-    scale: hovered && isFocused ? 1.5 : 1,
+    scale: hovered && isFocused ? 1.2 : 1,
     positionX: position[0],
     positionY: position[1],
     positionZ: position[2],

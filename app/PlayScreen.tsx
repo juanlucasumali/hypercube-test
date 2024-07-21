@@ -75,7 +75,7 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
         {/* <group position={[-5 * Math.sqrt(3)/2, 0, 2.6]} rotation={[0, Math.PI - 1.05, 0]}> */}
             <Text 
                 position={[0, 3, 0]}
-                color="white" 
+                color="black" 
                 anchorX="center" 
                 anchorY="middle"
                 scale={[0.5, 0.5, 0.5]}
@@ -84,7 +84,7 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
             </Text>
             <Text 
                 position={[0, 2, 0]}
-                color="white" 
+                color="black" 
                 anchorX="center" 
                 anchorY="middle"
                 scale={[0.3, 0.3, 0.3]}
@@ -113,7 +113,7 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                 <Text
                     position={[-1, 0, 0]}
                     fontSize={0.3}
-                    color="white"
+                    color="black"
                     anchorX="center"
                     anchorY="middle"
                     onClick={rotateLeft}
@@ -137,7 +137,7 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                 <Text
                     position={[1, 0, 0]}
                     fontSize={0.3}
-                    color="white"
+                    color="black"
                     anchorX="center"
                     anchorY="middle"
                     onClick={rotateRight}
