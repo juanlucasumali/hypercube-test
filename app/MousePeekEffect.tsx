@@ -42,7 +42,7 @@ export default function MousePeekEffect() {
 
   return (
     <EffectComposer>
-      <Pixelation granularity={canvasHeight / 331.6} />
+      <Pixelation granularity={canvasHeight / 165.8} />
     </EffectComposer>
   )
 }
