@@ -93,14 +93,6 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
             <AnimatedGroup rotation-y={rotation} position={[0, 0, 3]}>
             {/* <AnimatedGroup rotation-y={rotation} position={[-5 * Math.sqrt(3)/2 + 4.4, 0, 4]}> */}
             {boxesWithPositions.map((box, index) => {
-                const roomRef = useRef<THREE.Group>(null)
-
-                useFrame(() => {
-                    if (roomRef.current) {
-                        roomRef.current.rotation.y = -rotation.get()
-                    }
-                })
-
                 return (
                     <Box 
                         key={box.id}
@@ -109,11 +101,9 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                         gameState={gameState}
                         color={box.color}
                         isFocused={index === focusedIndex}
-                    >
-                        <group ref={roomRef}>
-                            {box.child}
-                        </group>
-                    </Box>
+                        rotation={rotation}
+                        room={box.child}
+                    />
                 )
             })}
 
