@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useSpring, animated, config, SpringValue } from '@react-spring/three'
 import * as THREE from 'three'
-import { MeshPortalMaterial, PortalMaterialType } from '@react-three/drei'
+import { MeshPortalMaterial, PortalMaterialType, useCursor } from '@react-three/drei'
 
 interface BoxProps {
   position: [number, number, number]
@@ -23,6 +23,7 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
   const roomRef = useRef<THREE.Group>(null)
   const [isOpen, setIsOpen] = useState(false)
   const boxRef = useRef<THREE.BoxGeometry>(null!);
+  useCursor(hovered && isFocused)
 
   // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
@@ -40,7 +41,7 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
       if (portalMaterial.current) {
         portalMaterial.current.blend = THREE.MathUtils.lerp(
           portalMaterial.current.blend,
-          isOpen ? 1 : 0,
+          isOpen && isFocused ? 1 : 0,
           0.1
         )
       }
@@ -57,7 +58,7 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
         ref={ref}
         onPointerOver={() => { setHover(true); onHover(); }}
         onPointerOut={() => setHover(false)}
-        onDoubleClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen(!isOpen)}
       >
         <boxGeometry args={[1.5, 1.5, 1.5]} />
         <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>

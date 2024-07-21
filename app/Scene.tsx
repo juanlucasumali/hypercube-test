@@ -38,9 +38,9 @@ export default function Scene() {
           <PlayScreen onBack={handleBack} gameState={gameState} />
           {/* <AboutScreen onBack={handleBack} /> */}
         </RotatingGroup>
-        <EffectComposer>
+        {/* <EffectComposer>
           <Pixelation granularity={5} />
-        </EffectComposer>
+        </EffectComposer> */}
       </Suspense>
     </Canvas>
   )
