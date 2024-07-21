@@ -28,12 +28,8 @@ export default function MousePeekEffect() {
   }, [])
 
   useFrame(() => {
-
-    console.log(canvasHeight / 331.6)
     if (canvasHeight != gl.domElement.height) {
       setCanvasHeight(gl.domElement.height)
-      console.log("Current canvasHeight:", canvasHeight)
-      console.log("Current domElement height:", gl.domElement.height)
     }
 
     camera.rotation.y = -THREE.MathUtils.lerp(camera.rotation.y, rotation.y, MOUSE_PEEK)

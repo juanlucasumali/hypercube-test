@@ -22,9 +22,10 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
   const [hovered, setHover] = useState(false)
   const portalMaterial = useRef<PortalMaterialType>(null);
   const roomRef = useRef<THREE.Group>(null)
+  const [isEntering, setIsEntering] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { camera } = useThree()
-  useCursor(hovered && isFocused)
+  useCursor(hovered && isFocused && !isEntering && !isOpen)
 
   // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
@@ -39,25 +40,29 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
       if (roomRef.current) {
           roomRef.current.rotation.y = -rotation.get()
       }
-      if (portalMaterial.current) {
-        portalMaterial.current.blend = THREE.MathUtils.lerp(
-          portalMaterial.current.blend,
-          isOpen && isFocused ? 1 : 0,
-          0.1
-        )
-      }
+      // if (portalMaterial.current) {
+      //   portalMaterial.current.blend = THREE.MathUtils.lerp(
+      //     portalMaterial.current.blend,
+      //     isOpen && isFocused ? 1 : 0,
+      //     0.1
+      //   )
+      // }
   })
 
   const handleClick = () => {
-    gsap.to(camera.position, {
-      duration: 1,
-      x: 0,
-      y: 0,
-      z: -3,
-      ease: 'power2.inOut'
-    })
-    // setIsOpen(!isOpen)
-  }
+      setIsEntering(true);
+      gsap.to(camera.position, {
+        duration: 1,
+        x: 0,
+        y: 0,
+        z: !isOpen ? -3 : 0,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          setIsOpen(!isOpen);
+          setIsEntering(false);
+        }
+      })
+    }
 
   return (
     <animated.group
@@ -70,7 +75,7 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
         ref={ref}
         onPointerOver={() => { setHover(true); onHover(); }}
         onPointerOut={() => setHover(false)}
-        onClick={handleClick}
+        onClick={isFocused && !isEntering ? handleClick : () => {}}
       >
         <boxGeometry args={[1.5, 1.5, 1.5]} />
         <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
