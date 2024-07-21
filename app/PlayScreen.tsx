@@ -65,8 +65,9 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
 
     useEffect(() => {
         const newFocusedIndex = Math.round(rotationIndex) % boxCount
-        setFocusedIndex(newFocusedIndex < 0 ? newFocusedIndex + boxCount : newFocusedIndex)
-        setText(dummyBoxData[focusedIndex].hoverText)
+        const adjustedIndex = newFocusedIndex < 0 ? newFocusedIndex + boxCount : newFocusedIndex
+        setFocusedIndex(adjustedIndex)
+        setText(dummyBoxData[adjustedIndex].hoverText)
     }, [rotationIndex, boxCount])
     
     return (
