@@ -25,16 +25,15 @@ export default function Scene() {
   }
 
   return (
-    <Canvas camera={{ position: [0, 0, 0], fov: 75 }}>
+    <Canvas camera={{ position: [0, 0, 0], fov: 100 }}>
       <MousePeekEffect />
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} />
-
       <RotatingGroup gameState={gameState}>
-        <TitleScreen onPlay={handlePlay} onAbout={handleAbout} />
+        {/* <TitleScreen onPlay={handlePlay} onAbout={handleAbout} /> */}
         <PlayScreen onBack={handleBack} gameState={gameState} />
-        <AboutScreen onBack={handleBack} />
+        {/* <AboutScreen onBack={handleBack} /> */}
       </RotatingGroup>
     </Canvas>
   )
