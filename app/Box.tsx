@@ -2,30 +2,39 @@
 
 import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useSpring, animated, config } from '@react-spring/three'
+import { useSpring, animated, config, SpringValue } from '@react-spring/three'
 import * as THREE from 'three'
+import { MeshPortalMaterial, PortalMaterialType } from '@react-three/drei'
 
 interface BoxProps {
   position: [number, number, number]
-  color: string
   onHover: () => void
   gameState: string
+  room: React.ReactNode
+  color: string
+  isFocused: boolean
+  rotation: SpringValue<number>
 }
 
-export default function Box({ position, color, onHover, gameState }: BoxProps) {
+export default function Box({ position, onHover, gameState, room, color, isFocused, rotation }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false)
+  const portalMaterial = useRef<PortalMaterialType>(null);
+  const roomRef = useRef<THREE.Group>(null)
 
+  // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
-    scale: hovered ? 1.5 : 1,
+    scale: hovered && isFocused ? 1.5 : 1,
     positionX: position[0],
     positionY: position[1],
     positionZ: position[2],
-    config: config.wobbly
+    config: { mass: 1, tension: 280, friction: 60 }
   })
 
   useFrame(() => {
-    ref.current.rotation.y += 0.01
+      if (roomRef.current) {
+          roomRef.current.rotation.y = -rotation.get()
+      }
   })
 
   return (
@@ -38,8 +47,15 @@ export default function Box({ position, color, onHover, gameState }: BoxProps) {
       onPointerOver={() => { setHover(true); onHover(); }}
       onPointerOut={() => setHover(false)}
     >
-      <boxGeometry args={[1, 1, 1]} />
-      <animated.meshStandardMaterial color={color} />
+      <boxGeometry args={[1.5, 1.5, 1.5]} />
+      <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
+          <color attach="background" args={[color]} />
+          {/* <group position={[0, 0, -5]}> */}
+          <group ref={roomRef}>
+            {room}
+          </group>
+          {/* </group> */}
+        </MeshPortalMaterial>
     </animated.mesh>
   )
 }
