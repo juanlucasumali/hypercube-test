@@ -35,8 +35,8 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
     const boxCount = dummyBoxData.length
     const angleStep = (2 * Math.PI) / boxCount
 
-    const bold = { font: '/Inter-Bold.woff', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
-    const regular = { font: '/Inter-Regular.woff', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
+    const bold = { font: '/joystix.monospace-regular.otf', fontSize: 2.3, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
+    const regular = { font: '/joystix.monospace-regular.otf', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
 
     const boxesWithPositions = useMemo(() => {
         const radius = 3
@@ -103,17 +103,17 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
             </AnimatedGroup>
             <group position={[0, -1, 1.5]}>
                 <Text
-                    position={[-0.8, 0, 0]}
-                    scale={[0.2, 0.2, 0.2]}
+                    position={[-0.9, -0.05, 0]}
+                    scale={[0.1, 0.1, 0.1]}
                     color="black"
                     anchorX="center"
                     anchorY="middle"
                     onClick={rotateLeft}
-                    onPointerOver={(e) => (e.object.scale.x = e.object.scale.y = 0.3)}
-                    onPointerOut={(e) => (e.object.scale.x = e.object.scale.y = 0.2)}
+                    onPointerOver={(e) => (e.object.scale.x = e.object.scale.y = 0.2)}
+                    onPointerOut={(e) => (e.object.scale.x = e.object.scale.y = 0.1)}
                     {...regular}
                 >
-                    {`<`}
+                    {`←`}
                 </Text>
                 <Text 
                     position={[0, 0.3, 0.5]}
@@ -126,17 +126,17 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                     {text}
                 </Text>
                 <Text
-                    position={[0.8, 0, 0]}
-                    scale={[0.2, 0.2, 0.2]}
+                    position={[0.9, -0.05, 0]}
+                    scale={[0.1, 0.1, 0.1]}
                     color="black"
                     anchorX="center"
                     anchorY="middle"
                     onClick={rotateRight}
-                    onPointerOver={(e) => (e.object.scale.x = e.object.scale.y = 0.3)}
-                    onPointerOut={(e) => (e.object.scale.x = e.object.scale.y = 0.2)}
+                    onPointerOver={(e) => (e.object.scale.x = e.object.scale.y = 0.2)}
+                    onPointerOut={(e) => (e.object.scale.x = e.object.scale.y = 0.1)}
                     {...regular}
                 >
-                    {`>`}
+                    {`→`}
                 </Text>
             </group>
         </group>
