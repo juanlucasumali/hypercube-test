@@ -10,14 +10,17 @@ interface RoomProps {
   color: string
   gltf: string
   inRoom: boolean
+  isEntering: boolean
+  isExiting: boolean
 }
 
 const bold = { font: '/joystix.monospace-regular.otf', fontSize: 2.3, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
 const regular = { font: '/joystix.monospace-regular.otf', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
 
-export default function Room({ color, gltf, inRoom }: RoomProps) {
+export default function Room({ color, gltf, inRoom, isEntering, isExiting }: RoomProps) {
+  console.log("isEntering: ", isEntering, "isExiting:", isExiting);
   const { camera } = useThree()
-  const inPosition = camera.position.z == -3
+  const inPosition = camera.position.z === -3
   return (
     <group>
       <color attach="background" args={['#171720']} />
@@ -35,7 +38,7 @@ export default function Room({ color, gltf, inRoom }: RoomProps) {
                 scale={[0.5, 0.5, 0.5]}
                 {...bold}
             >
-                {inPosition && `HI THERE!`}
+                {(isEntering || inPosition) && !isExiting && `HI THERE!`}
             </Text>
           <group rotation={[0, 1, 0]} position={[-5, -11, 5]}>
             <Guy />

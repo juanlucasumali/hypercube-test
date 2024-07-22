@@ -26,6 +26,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   const portalMaterial = useRef<PortalMaterialType>(null!);
   const roomRef = useRef<THREE.Group>(null)
   const [isEntering, setIsEntering] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { camera } = useThree()
   useCursor(hovered && isFocused && !isEntering && !isOpen)
@@ -46,23 +47,36 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   })
 
   const handleClick = () => {
+    if (!isOpen) {
       setIsEntering(true);
-      gsap.to(camera.position, {
-        onStart: () => { 
-          // isOpen && portalMaterial.current ? portalMaterial.current.blend = 0 : null
-        },
-        duration: 1,
-        x: 0,
-        y: 0,
-        z: !isOpen ? -3 : 0,
-        ease: 'power4.inOut',
-        onComplete: () => {
-          setIsOpen(!isOpen);
-          setIsEntering(false);
-          // isOpen && portalMaterial.current ? null : portalMaterial.current.blend = 1;
-        }
-      })
+    } else {
+      setIsExiting(true);
     }
+  
+    gsap.to(camera.position, {
+      onStart: () => {
+        // if (isOpen && portalMaterial.current) {
+        //   portalMaterial.current.blend = 0;
+        // }
+      },
+      duration: 1,
+      x: 0,
+      y: 0,
+      z: isOpen ? 0 : -3,
+      ease: 'power4.inOut',
+      onComplete: () => {
+        setIsOpen(!isOpen);
+        if (isOpen) {
+          setIsExiting(false);
+        } else {
+          setIsEntering(false);
+        }
+        // if (!isOpen && portalMaterial.current) {
+        //   portalMaterial.current.blend = 1;
+        // }
+      }
+    });
+  };
 
   return (
     <animated.group
@@ -82,7 +96,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
           <color attach="background" args={[boxColor ? boxColor! : color!]} />
           <animated.group scale-x={scale.to(s => 1 / s)} scale-y={scale.to(s => 1 / s)} scale-z={scale.to(s => 1 / s)}>
             <group ref={roomRef}>
-              {child ? child : <Room color={roomColor!} gltf={roomScene!} inRoom={isOpen}/>}
+              {child ? child : <Room color={roomColor!} gltf={roomScene!} inRoom={isOpen} isEntering={isEntering} isExiting={isExiting}/>}
             </group>
           </animated.group>
         </MeshPortalMaterial>
