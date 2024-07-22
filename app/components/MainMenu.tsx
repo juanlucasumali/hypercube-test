@@ -5,26 +5,28 @@ import { Gltf, Text } from '@react-three/drei'
 import { useSpring, animated } from '@react-spring/three'
 import Box from './Box'
 import Room from './Room'
-
 interface BoxData {
-  id: string
-  hoverText: string
-  child: React.ReactNode
-  color: string
-}
-
-interface MainMenuProps {
-}
-
-const dummyBoxData: BoxData[] = [
-    { id: 'mysterious', hoverText: '???', color: "#e4cdac", child: <Room color={'black'} /> },
-    { id: 'oranges1', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
-    { id: 'teapot1', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
-    { id: 'cucumber1', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
-    { id: 'oranges2', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
-    { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
-    { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
-]
+    id: string
+    hoverText: string
+    child?: React.ReactNode
+    color?: string
+    boxColor?: string
+    roomColor?: string
+    roomScene?: string
+  }
+  
+  interface MainMenuProps {
+  }
+  
+  const dummyBoxData: BoxData[] = [
+      { id: 'mysterious', hoverText: '???', boxColor: "#e4cdac", roomColor: 'black', roomScene: 'fiesta_tea-transformed.glb' },
+      { id: 'oranges1', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
+      { id: 'teapot1', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
+      { id: 'cucumber1', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
+      { id: 'oranges2', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
+      { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
+      { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
+  ]
 const AnimatedGroup = animated.group
 
 export default function MainMenu({ }: MainMenuProps) {
@@ -90,9 +92,12 @@ export default function MainMenu({ }: MainMenuProps) {
                         position={box.position}
                         onHover={() => {}}
                         color={box.color}
+                        child={box.child}
+                        boxColor={box.boxColor}
                         isFocused={index === focusedIndex}
                         rotation={rotation}
-                        room={box.child}
+                        roomColor={box.roomColor}
+                        roomScene={box.roomScene}
                     />
                 )
             })}

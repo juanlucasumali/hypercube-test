@@ -6,17 +6,21 @@ import { useSpring, animated, config, SpringValue } from '@react-spring/three'
 import * as THREE from 'three'
 import { MeshPortalMaterial, PortalMaterialType, useCursor } from '@react-three/drei'
 import { gsap } from 'gsap'
+import Room from './Room'
 
 interface BoxProps {
   position: [number, number, number]
   onHover: () => void
-  room: React.ReactNode
-  color: string
+  child?: React.ReactNode
+  color?: string
+  boxColor?: string
+  roomColor?: string
+  roomScene?: string
   isFocused: boolean
   rotation: SpringValue<number>
 }
 
-export default function Box({ position, onHover, room, color, isFocused, rotation }: BoxProps) {
+export default function Box({ position, onHover, color, child, boxColor, roomColor, roomScene, isFocused, rotation }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false)
   const portalMaterial = useRef<PortalMaterialType>(null!);
@@ -39,20 +43,13 @@ export default function Box({ position, onHover, room, color, isFocused, rotatio
       if (roomRef.current) {
           roomRef.current.rotation.y = -rotation.get()
       }
-      // if (portalMaterial.current) {
-      //   portalMaterial.current.blend = THREE.MathUtils.lerp(
-      //     portalMaterial.current.blend,
-      //     isOpen && isFocused ? 1 : 0,
-      //     0.1
-      //   ) THREE.MathUtils.lerp(portalMaterial.current.blend, isOpen && isFocused ? 1 : 0, 0.1)
-      // }
   })
 
   const handleClick = () => {
       setIsEntering(true);
       gsap.to(camera.position, {
         onStart: () => { 
-          isOpen && portalMaterial.current ? portalMaterial.current.blend = 0 : null
+          // isOpen && portalMaterial.current ? portalMaterial.current.blend = 0 : null
         },
         duration: 1,
         x: 0,
@@ -62,7 +59,7 @@ export default function Box({ position, onHover, room, color, isFocused, rotatio
         onComplete: () => {
           setIsOpen(!isOpen);
           setIsEntering(false);
-          isOpen && portalMaterial.current ? null : portalMaterial.current.blend = 1
+          // isOpen && portalMaterial.current ? null : portalMaterial.current.blend = 1;
         }
       })
     }
@@ -82,10 +79,10 @@ export default function Box({ position, onHover, room, color, isFocused, rotatio
       >
         <boxGeometry args={[1.5, 1.5, 1.5]} />
         <MeshPortalMaterial ref={portalMaterial} side={THREE.DoubleSide}>
-          <color attach="background" args={[color]} />
+          <color attach="background" args={[boxColor ? boxColor! : color!]} />
           <animated.group scale-x={scale.to(s => 1 / s)} scale-y={scale.to(s => 1 / s)} scale-z={scale.to(s => 1 / s)}>
             <group ref={roomRef}>
-              {room}
+              {child ? child : <Room color={roomColor!} gltf={roomScene!} inRoom={isOpen}/>}
             </group>
           </animated.group>
         </MeshPortalMaterial>

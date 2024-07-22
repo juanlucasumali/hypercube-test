@@ -2,8 +2,9 @@ import React, { createContext, useContext, useRef, ReactNode } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useBox, useConeTwistConstraint } from '@react-three/cannon'
 import { createRagdoll } from '../helpers/createRagdoll'
-import { Block } from '../helpers/Block'
+import { Block } from './Block'
 import * as THREE from 'three'
+
 
 const { shapes, joints } = createRagdoll(5.5, Math.PI / 16, Math.PI / 16, 0)
 const context = createContext<React.RefObject<THREE.Object3D> | null>(null)

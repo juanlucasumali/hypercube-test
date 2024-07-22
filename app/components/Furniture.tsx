@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import { useGLTF, SpotLight } from '@react-three/drei'
 import { useCompoundBody, useSphere, useCylinder, useDistanceConstraint, usePointToPointConstraint } from '@react-three/cannon'
 import { GLTF } from 'three-stdlib'
-import { Block } from '../helpers/Block'
+import { Block } from './Block'
 
 type GLTFResult = GLTF & {
   nodes: {
