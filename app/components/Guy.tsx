@@ -6,7 +6,7 @@ import { Block } from '../helpers/Block'
 import * as THREE from 'three'
 
 const { shapes, joints } = createRagdoll(5.5, Math.PI / 16, Math.PI / 16, 0)
-const context = createContext<THREE.Object3D | null>(null)
+const context = createContext<React.RefObject<THREE.Object3D> | null>(null)
 
 interface BodyPartProps {
   config?: any
@@ -24,36 +24,39 @@ interface Shape {
 }
 
 const BodyPart: React.FC<BodyPartProps> = ({ config, children, render, name, ...props }) => {
-  const { color, args, mass, position } = shapes[name] as Shape
-  const parent = useContext(context)
-  const [ref] = useBox(() => ({ mass, args, position, linearDamping: 0.99, ...props }))
-  useConeTwistConstraint(ref, parent, config)
-  return (
-    <context.Provider value={ref}>
-      <Block castShadow receiveShadow ref={ref} {...props} scale={args} name={name} color={color}>
-        {render}
-      </Block>
-      {children}
-    </context.Provider>
-  )
-}
-
+    const { color, args, mass, position } = shapes[name] as Shape
+    const parent = useContext(context)
+    const ref = useRef<THREE.Mesh>(null)
+    const [, api] = useBox(() => ({ mass, args, position, linearDamping: 0.99, ...props }), ref)
+    
+    useConeTwistConstraint(ref, parent || undefined, config)
+    
+    return (
+      <context.Provider value={ref}>
+        <Block castShadow receiveShadow ref={ref} {...props} scale={args} name={name} color={color}>
+          {render}
+        </Block>
+        {children}
+      </context.Provider>
+    )
+  }
+  
 function Face() {
-  const mouth = useRef<THREE.Mesh>(null)
-  const eyes = useRef<THREE.Group>(null)
-  useFrame((state) => {
+const mouth = useRef<THREE.Mesh>(null)
+const eyes = useRef<THREE.Group>(null)
+useFrame((state) => {
     if (eyes.current) eyes.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.1
     if (mouth.current) mouth.current.scale.y = (1 + Math.sin(state.clock.elapsedTime * 2)) * 0.6
-  })
-  return (
+})
+return (
     <>
-      <group ref={eyes}>
+    <group ref={eyes}>
         <Block position={[-0.3, 0.1, 0.5]} args={[0.2, 0.1, 0.1]} color="black" transparent opacity={0.8} />
         <Block position={[0.3, 0.1, 0.5]} args={[0.2, 0.1, 0.1]} color="black" transparent opacity={0.8} />
-      </group>
-      <Block ref={mouth} position={[0, -0.2, 0.5]} args={[0.3, 0.05, 0.1]} color="#700000" transparent opacity={0.8} />
+    </group>
+    <Block ref={mouth} position={[0, -0.2, 0.5]} args={[0.3, 0.05, 0.1]} color="#700000" transparent opacity={0.8} />
     </>
-  )
+)
 }
 
 interface GuyProps {

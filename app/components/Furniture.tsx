@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useGLTF, SpotLight } from '@react-three/drei'
 import { useCompoundBody, useSphere, useCylinder, useDistanceConstraint, usePointToPointConstraint } from '@react-three/cannon'
 import { GLTF } from 'three-stdlib'
@@ -21,7 +21,8 @@ interface Props {
 }
 
 export function Chair(props: Props) {
-  const [ref] = useCompoundBody(() => ({
+  const ref = useRef<THREE.Group>(null)
+  const [, api] = useCompoundBody(() => ({
     mass: 24,
     linearDamping: 0.95,
     angularDamping: 0.95,
@@ -34,7 +35,8 @@ export function Chair(props: Props) {
       { type: 'Box', mass: 1, position: [5 + -3.75, -3.5, 2.5], args: [0.5, 3, 0.5] }
     ],
     ...props
-  }))
+  }), ref)
+
   return (
     <group ref={ref}>
       <Block position={[0, 0, 0]} scale={[3.1, 3.1, 0.5]} />
@@ -46,22 +48,9 @@ export function Chair(props: Props) {
     </group>
   )
 }
-
-export function Mug(props: Props) {
-  const { nodes, materials } = useGLTF('/cup.glb') as GLTFResult
-  const [cup] = useCylinder(() => ({ mass: 1, args: [0.62, 0.62, 1.2, 16], linearDamping: 0.95, angularDamping: 0.95, ...props }))
-  return (
-    <group ref={cup} dispose={null}>
-      <group rotation={[Math.PI / 2, 0, 0]} scale={[0.012, 0.012, 0.012]}>
-        <mesh receiveShadow castShadow material={materials.default} geometry={nodes['buffer-0-mesh-0'].geometry} />
-        <mesh material={materials.Liquid} geometry={nodes['buffer-0-mesh-0_1'].geometry} />
-      </group>
-    </group>
-  )
-}
-
 export function Table(props: Props) {
-  const [table] = useCompoundBody(() => ({
+  const ref = useRef<THREE.Group>(null)
+  const [, api] = useCompoundBody(() => ({
     mass: 54,
     linearDamping: 0.95,
     angularDamping: 0.95,
@@ -73,42 +62,15 @@ export function Table(props: Props) {
       { type: 'Box', mass: 1, position: [2, -2.25, -2], args: [0.5, 4, 0.5] }
     ],
     ...props
-  }))
+  }), ref)
+
   return (
-    <group ref={table}>
+    <group ref={ref}>
       <Block scale={[5, 0.5, 5]} position={[0, 0, 0]} />
       <Block scale={[0.5, 4, 0.5]} position={[2, -2.25, 2]} />
       <Block scale={[0.5, 4, 0.5]} position={[-2, -2.25, -2]} />
       <Block scale={[0.5, 4, 0.5]} position={[-2, -2.25, 2]} />
       <Block scale={[0.5, 4, 0.5]} position={[2, -2.25, -2]} />
     </group>
-  )
-}
-
-export function Lamp(props: Props) {
-  const [target] = useState(() => new THREE.Object3D())
-  const [fixed] = useSphere(() => ({ collisionFilterGroup: 0, type: 'Static', args: [0.2], ...props }))
-  const [lamp] = useCylinder(() => ({ mass: 1, args: [0.5, 1.5, 2, 16], angularDamping: 0.95, linearDamping: 0.95, material: { friction: 0.9 }, ...props }))
-  useDistanceConstraint(fixed, lamp, { distance: 2, pivotA: [0, 0, 0], pivotB: [0, 2, 0] })
-  usePointToPointConstraint(fixed, lamp, { pivotA: [0, 0, 0], pivotB: [0, 2, 0] })
-  return (
-    <mesh ref={lamp}>
-      <cylinderGeometry args={[0.5, 1.5, 2, 32]} />
-      <meshStandardMaterial />
-      <SpotLight
-        castShadow
-        target={target}
-        penumbra={0.2}
-        radiusTop={0.4}
-        radiusBottom={40}
-        distance={80}
-        angle={0.45}
-        attenuation={20}
-        anglePower={5}
-        intensity={1}
-        opacity={0.2}
-      />
-      <primitive object={target} position={[0, -1, 0]} />
-    </mesh>
   )
 }
