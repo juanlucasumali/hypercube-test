@@ -10,17 +10,16 @@ import { gsap } from 'gsap'
 interface BoxProps {
   position: [number, number, number]
   onHover: () => void
-  gameState: string
   room: React.ReactNode
   color: string
   isFocused: boolean
   rotation: SpringValue<number>
 }
 
-export default function Box({ position, onHover, gameState, room, color, isFocused, rotation }: BoxProps) {
+export default function Box({ position, onHover, room, color, isFocused, rotation }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false)
-  const portalMaterial = useRef<PortalMaterialType>(null);
+  const portalMaterial = useRef<PortalMaterialType>(null!);
   const roomRef = useRef<THREE.Group>(null)
   const [isEntering, setIsEntering] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -45,21 +44,25 @@ export default function Box({ position, onHover, gameState, room, color, isFocus
       //     portalMaterial.current.blend,
       //     isOpen && isFocused ? 1 : 0,
       //     0.1
-      //   )
+      //   ) THREE.MathUtils.lerp(portalMaterial.current.blend, isOpen && isFocused ? 1 : 0, 0.1)
       // }
   })
 
   const handleClick = () => {
       setIsEntering(true);
       gsap.to(camera.position, {
+        onStart: () => { 
+          isOpen && portalMaterial.current ? portalMaterial.current.blend = 0 : null
+        },
         duration: 1,
         x: 0,
         y: 0,
         z: !isOpen ? -3 : 0,
-        ease: 'power2.inOut',
+        ease: 'power4.inOut',
         onComplete: () => {
           setIsOpen(!isOpen);
           setIsEntering(false);
+          isOpen && portalMaterial.current ? null : portalMaterial.current.blend = 1
         }
       })
     }

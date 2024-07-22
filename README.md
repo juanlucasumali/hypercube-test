@@ -2,7 +2,10 @@
 
 
 THE PLAN:
-1. Disappear cursor until escape
+1. Change cursor to be a pixelated one
+2. Create a Zoom pixelated into the universe maybe ripple effect when going into the box
+3. Make mobile friendly; box toggle and title are fixed to the screen
+
 1. Make a hook that mananges certain thingies
 2. For now, use the hook to indicate that a box is clicked
 3. When a box is clicked, update the attribute in the hook

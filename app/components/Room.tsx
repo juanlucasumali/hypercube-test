@@ -1,14 +1,12 @@
-// Room.tsx
 import React from 'react'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface RoomProps {
   color: string
-  onBack: () => void
 }
 
-export default function Room({ color, onBack }: RoomProps) {
+export default function Room({ color }: RoomProps) {
   return (
     <group>
       <ambientLight intensity={0.5} />

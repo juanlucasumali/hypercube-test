@@ -1,5 +1,5 @@
-import ClientOnly from './ClientOnly'
-import Scene from './Scene'
+import ClientOnly from './components/ClientOnly'
+import Scene from './App'
 
 export default function Home() {
   return (

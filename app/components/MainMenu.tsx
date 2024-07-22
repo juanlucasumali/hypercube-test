@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { Gltf, Text } from '@react-three/drei'
 import { useSpring, animated } from '@react-spring/three'
 import Box from './Box'
+import Room from './Room'
 
 interface BoxData {
   id: string
@@ -12,22 +13,21 @@ interface BoxData {
   color: string
 }
 
-interface PlayScreenProps {
-  onBack: () => void
-  gameState: string
+interface MainMenuProps {
 }
 
 const dummyBoxData: BoxData[] = [
   { id: 'oranges1', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
   { id: 'teapot1', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
   { id: 'cucumber1', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
+  { id: 'mysterious', hoverText: '???', color: "#e4cdac", child: <Room color={'black'} /> },
   { id: 'oranges2', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
   { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
   { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
 ]
 const AnimatedGroup = animated.group
 
-export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
+export default function MainMenu({ }: MainMenuProps) {
     const [text, setText] = useState('')
     const [rotationIndex, setRotationIndex] = useState(0)
     const [focusedIndex, setFocusedIndex] = useState(0)
@@ -72,7 +72,6 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
     
     return (
         <group position={[0, 0, -3]} rotation={[0, 0, 0]}>
-        {/* <group position={[-5 * Math.sqrt(3)/2, 0, 2.6]} rotation={[0, Math.PI - 1.05, 0]}> */}
             <Text 
                 position={[0, 3, 0]}
                 color="black" 
@@ -84,14 +83,12 @@ export default function PlayScreen({ onBack, gameState }: PlayScreenProps) {
                 CONSIDER THIS:
             </Text>
             <AnimatedGroup rotation-y={rotation} position={[0, 0, 3]}>
-            {/* <AnimatedGroup rotation-y={rotation} position={[-5 * Math.sqrt(3)/2 + 4.4, 0, 4]}> */}
             {boxesWithPositions.map((box, index) => {
                 return (
                     <Box 
                         key={box.id}
                         position={box.position}
                         onHover={() => {}}
-                        gameState={gameState}
                         color={box.color}
                         isFocused={index === focusedIndex}
                         rotation={rotation}

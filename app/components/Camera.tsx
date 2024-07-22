@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { EffectComposer, Pixelation } from '@react-three/postprocessing'
 
 const MOUSE_PEEK = 1;
 
-export default function MousePeekEffect() {
+export default function Camera() {
   const { camera, gl } = useThree()
   const [rotation, setRotation] = useState({ x: 0, y: 0 })
   const [canvasHeight, setCanvasHeight] = useState(gl.domElement.height)
