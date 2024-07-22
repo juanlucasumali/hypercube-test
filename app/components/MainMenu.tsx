@@ -17,13 +17,13 @@ interface MainMenuProps {
 }
 
 const dummyBoxData: BoxData[] = [
-  { id: 'oranges1', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
-  { id: 'teapot1', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
-  { id: 'cucumber1', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
-  { id: 'mysterious', hoverText: '???', color: "#e4cdac", child: <Room color={'black'} /> },
-  { id: 'oranges2', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
-  { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
-  { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
+    { id: 'mysterious', hoverText: '???', color: "#e4cdac", child: <Room color={'black'} /> },
+    { id: 'oranges1', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
+    { id: 'teapot1', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
+    { id: 'cucumber1', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
+    { id: 'oranges2', hoverText: 'Orange', color: "#e4cdac", child: <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} /> },
+    { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
+    { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
 ]
 const AnimatedGroup = animated.group
 

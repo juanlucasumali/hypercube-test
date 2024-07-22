@@ -1,6 +1,10 @@
 import React from 'react'
-import { Text } from '@react-three/drei'
+import { Gltf, Text, useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
+import { Physics, usePlane } from '@react-three/cannon'
+import Floor from './Floor'
+import { Table } from './Furniture'
+import { Guy } from './Guy'
 
 interface RoomProps {
   color: string
@@ -9,33 +13,18 @@ interface RoomProps {
 export default function Room({ color }: RoomProps) {
   return (
     <group>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[0, 2, 0]} intensity={0.5} />
-      <mesh>
-        <boxGeometry args={[10, 10, 10]} />
-        <meshStandardMaterial color={color} side={THREE.BackSide} />
-      </mesh>
-      <mesh position={[0, 0, -2]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-      <mesh position={[-1, -1, -3]}>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-      <mesh position={[1, 1, -3]}>
-        <coneGeometry args={[0.5, 1, 32]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-      <Text
-        position={[0, 0, 4]}
-        fontSize={0.5}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {color.charAt(0).toUpperCase() + color.slice(1)} Room
-      </Text>
+      <color attach="background" args={['#171720']} />
+      <fog attach="fog" args={['#171720', 60, 90]} />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[-20, -5, -20]} color="red" />
+      {/* <Gltf src="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/low-poly-farm/model.gltf" scale={1} position={[0, -0.8, -4]} /> */}
+      <Physics allowSleep={false} iterations={15} gravity={[0, -200, 0]}>
+        <group position={[8, 0, -15]}>
+          <Guy />
+          <Table />
+        </group>
+        <Floor color={"#878790"} position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+      </Physics>
     </group>
   )
 }
