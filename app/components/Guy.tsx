@@ -5,7 +5,6 @@ import { createRagdoll } from '../helpers/createRagdoll'
 import { Block } from './Block'
 import * as THREE from 'three'
 
-
 const { shapes, joints } = createRagdoll(5.5, Math.PI / 16, Math.PI / 16, 0)
 const context = createContext<React.RefObject<THREE.Object3D> | null>(null)
 
@@ -24,23 +23,32 @@ interface Shape {
   position: [number, number, number]
 }
 
-const BodyPart: React.FC<BodyPartProps> = ({ config, children, render, name, ...props }) => {
-    const { color, args, mass, position } = shapes[name] as Shape
-    const parent = useContext(context)
-    const ref = useRef<THREE.Mesh>(null)
-    const [, api] = useBox(() => ({ mass, args, position, linearDamping: 0.99, ...props }), ref)
-    
-    useConeTwistConstraint(ref, parent || undefined, config)
-    
-    return (
-      <context.Provider value={ref}>
-        <Block castShadow receiveShadow ref={ref} {...props} scale={args} name={name} color={color}>
-          {render}
-        </Block>
-        {children}
-      </context.Provider>
-    )
-  }
+const BodyPart: React.FC<BodyPartProps> = ({ config, children, render, name, color: propColor, ...props }) => {
+  const { color: shapeColor, args, mass, position } = shapes[name] as Shape
+  const parent = useContext(context)
+  const ref = useRef<THREE.Mesh>(null)
+  const [, api] = useBox(() => ({ mass: 0, args, position, linearDamping: 0.99, ...props }), ref)
+  
+  useConeTwistConstraint(ref, parent || undefined, config)
+  
+  return (
+    <context.Provider value={ref}>
+      <Block 
+        castShadow 
+        receiveShadow 
+        ref={ref} 
+        {...props} 
+        scale={args} 
+        name={name} 
+        color={propColor || shapeColor}
+      >
+        {render}
+      </Block>
+      {children}
+    </context.Provider>
+  )
+}
+
   
 function Face() {
 const mouth = useRef<THREE.Mesh>(null)
@@ -61,12 +69,13 @@ return (
 }
 
 interface GuyProps {
-  [key: string]: any
+  torsoColor?: string;
+  [key: string]: any;
 }
 
-export const Guy: React.FC<GuyProps> = (props) => {
+export const Guy: React.FC<GuyProps> = ({ torsoColor, ...props }) => {
   return (
-    <BodyPart name="upperBody" {...props}>
+    <BodyPart name="upperBody" color={torsoColor} {...props}>
       <BodyPart {...props} name="head" config={joints['neckJoint']} render={<Face />} />
       {/* <BodyPart {...props} name="upperLeftArm" config={joints['leftShoulder']}>
         <BodyPart {...props} name="lowerLeftArm" config={joints['leftElbowJoint']} />
