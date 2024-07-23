@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber'
 import Camera from './components/Camera'
 import { Suspense } from "react";
 import MainMenu from './components/MainMenu';
+import ThreeHUD from './components/ThreeHUD';
 
 export default function Scene() {
 
@@ -16,6 +17,7 @@ export default function Scene() {
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
         <MainMenu />
+        <ThreeHUD />
       </Suspense>
     </Canvas>
   )

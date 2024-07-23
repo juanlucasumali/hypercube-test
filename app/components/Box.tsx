@@ -18,9 +18,10 @@ interface BoxProps {
   roomScene?: string
   isFocused: boolean
   rotation: SpringValue<number>
+  id: string
 }
 
-export default function Box({ position, onHover, color, child, boxColor, roomColor, roomScene, isFocused, rotation }: BoxProps) {
+export default function Box({ position, onHover, color, child, boxColor, roomColor, roomScene, isFocused, rotation, id }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false)
   const portalMaterial = useRef<PortalMaterialType>(null!);
@@ -31,7 +32,6 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   const { camera } = useThree()
   useCursor(hovered && isFocused && !isEntering && !isOpen)
 
-  // TODO: The frame should scale, but not the room inside. Also, turn the frame. Look at examples on how they acheived this.
   const { scale, positionX, positionY, positionZ } = useSpring({
     scale: hovered && isFocused ? 1.2 : 1,
     positionX: position[0],
@@ -54,11 +54,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
     }
   
     gsap.to(camera.position, {
-      onStart: () => {
-        // if (isOpen && portalMaterial.current) {
-        //   portalMaterial.current.blend = 0;
-        // }
-      },
+      onStart: () => {},
       duration: 1,
       x: 0,
       y: 0,
@@ -71,9 +67,6 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
         } else {
           setIsEntering(false);
         }
-        // if (!isOpen && portalMaterial.current) {
-        //   portalMaterial.current.blend = 1;
-        // }
       }
     });
   };
@@ -96,7 +89,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
           <color attach="background" args={[boxColor ? boxColor! : color!]} />
           <animated.group scale-x={scale.to(s => 1 / s)} scale-y={scale.to(s => 1 / s)} scale-z={scale.to(s => 1 / s)}>
             <group ref={roomRef}>
-              {child ? child : <Room color={roomColor!} gltf={roomScene!} inRoom={isOpen} isEntering={isEntering} isExiting={isExiting}/>}
+              {child ? child : <Room roomId={id} color={roomColor!} gltf={roomScene!} inRoom={isOpen} isEntering={isEntering} isExiting={isExiting}/>}
             </group>
           </animated.group>
         </MeshPortalMaterial>

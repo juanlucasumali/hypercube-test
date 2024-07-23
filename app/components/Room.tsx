@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import { Physics } from '@react-three/cannon'
 import Floor from './Floor'
@@ -6,8 +8,10 @@ import { Guy } from './Guy'
 import { Text } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import Groq from 'groq-sdk'
+import { AppContext, useAppContext } from '../contexts/AppContext'
 
 interface RoomProps {
+  roomId: string;
   color: string
   gltf: string
   inRoom: boolean
@@ -39,12 +43,23 @@ async function getGroqChatCompletion() {
   }
 }
 
-export default function Room({ color, gltf, inRoom, isEntering, isExiting }: RoomProps) {
-  console.log("isEntering: ", isEntering, "isExiting:", isExiting);
+export default function Room({ roomId, color, gltf, inRoom, isEntering, isExiting }: RoomProps) {
+  const { setInRoom, setSelectedRoom } = useAppContext();
   const { camera } = useThree()
   const inPosition = camera.position.z === -3
 
   const [groqResponse, setGroqResponse] = useState("")
+
+  useEffect(() => {
+    if (inRoom) {
+      setInRoom(true);
+      setSelectedRoom(roomId);
+    } else {
+      setInRoom(false);
+      setSelectedRoom('');
+    }
+  }, [inRoom]);
+
 
   // TODO: If chatting, guy's mouth moves
   useEffect(() => {

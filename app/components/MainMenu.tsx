@@ -89,6 +89,7 @@ export default function MainMenu({ }: MainMenuProps) {
                 return (
                     <Box 
                         key={box.id}
+                        id={box.id}
                         position={box.position}
                         onHover={() => {}}
                         color={box.color}
