@@ -3,7 +3,7 @@ import { useThree, createPortal, useFrame } from '@react-three/fiber'
 import { Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
 
-const ThreeHUD: React.FC = () => {
+const HUD: React.FC = () => {
   const { size, gl } = useThree()
   const virtualScene = useRef(new THREE.Scene()).current
   const virtualCamera = useRef(new THREE.OrthographicCamera(-size.width / 2, size.width / 2, size.height / 2, -size.height / 2, 0.1, 1000))
@@ -56,7 +56,7 @@ const ThreeHUD: React.FC = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Press 'c' to open input
+        {!showInput ? `Press 'c' to chat.` : `Pres 'return' when you're done!` }
       </Text>
       {showInput && (
         <Html position={[0, 0, 0]}>
@@ -77,11 +77,11 @@ const ThreeHUD: React.FC = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Stored Value: {storedValue}
+        You said: "{storedValue}"
       </Text>
     </>,
     virtualScene
   )
 }
 
-export default ThreeHUD
+export default HUD
