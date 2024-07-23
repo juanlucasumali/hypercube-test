@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'start';
+  src: url('/start.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.start-light {
+  font-family: 'start';
+  font-weight: 300;
+  -webkit-text-stroke: 0.45px;
+  -webkit-text-stroke-color: currentColor;
+}
+
+.start-normal {
+  font-family: 'start';
+  font-weight: normal;
+}
+
+.start-bold {
+  font-family: 'start';
+  font-weight: 700;
+  text-shadow: 0.5px 0 0 currentColor;
+}

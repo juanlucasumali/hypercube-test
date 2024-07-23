@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'diary';
+  src: url('/diary.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.diary-light {
+  font-family: 'diary';
+  font-weight: 300;
+  -webkit-text-stroke: 0.45px;
+  -webkit-text-stroke-color: currentColor;
+}
+
+.diary-normal {
+  font-family: 'diary';
+  font-weight: normal;
+}
+
+.diary-bold {
+  font-family: 'diary';
+  font-weight: 700;
+  text-shadow: 0.5px 0 0 currentColor;
+}

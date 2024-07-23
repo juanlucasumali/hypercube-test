@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'joystix';
+  src: url('/joystix.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.joystix-light {
+  font-family: 'joystix';
+  font-weight: 300;
+  -webkit-text-stroke: 0.45px;
+  -webkit-text-stroke-color: currentColor;
+}
+
+.joystix-normal {
+  font-family: 'joystix';
+  font-weight: normal;
+}
+
+.joystix-bold {
+  font-family: 'joystix';
+  font-weight: 700;
+  text-shadow: 0.5px 0 0 currentColor;
+}

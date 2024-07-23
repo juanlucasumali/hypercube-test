@@ -5,10 +5,9 @@ import { Physics } from '@react-three/cannon'
 import Floor from './Floor'
 import { Table } from './Furniture'
 import { Guy } from './Guy'
-import { Text } from '@react-three/drei'
+import { Gltf, Text } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import Groq from 'groq-sdk'
-import { AppContext, useAppContext } from '../contexts/AppContext'
+import { useAppContext } from '../contexts/AppContext'
 
 interface RoomProps {
   roomId: string;
@@ -22,36 +21,14 @@ interface RoomProps {
 const bold = { font: '/joystix.monospace-regular.otf', fontSize: 2.3, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
 const regular = { font: '/joystix.monospace-regular.otf', fontSize: 2.5, letterSpacing: -0.05, lineHeight: 1, 'material-toneMapped': false }
 
-const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
-async function getGroqChatCompletion() {
-  try {
-    const response = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: "Hey! Tell me a joke in 4 words.",
-        },
-      ],
-      model: "llama3-8b-8192",
-    });
-    console.log(response.choices[0]?.message?.content)
-    return response.choices[0]?.message?.content || "";
-  } catch (error) {
-    console.error("Error fetching Groq response:", error);
-    return "Failed to fetch response";
-  }
-}
-
 export default function Room({ roomId, color, gltf, inRoom, isEntering, isExiting }: RoomProps) {
-  const { setInRoom, setSelectedRoom } = useAppContext();
+  const { setInRoom, setSelectedRoom, groqResponse } = useAppContext();
   const { camera } = useThree()
-  const inPosition = camera.position.z === -3
-
-  const [groqResponse, setGroqResponse] = useState("")
+const inPosition = camera.position.z === -3
 
   useEffect(() => {
     if (inRoom) {
+      console.log("In Room!", inRoom)
       setInRoom(true);
       setSelectedRoom(roomId);
     } else {
@@ -60,15 +37,7 @@ export default function Room({ roomId, color, gltf, inRoom, isEntering, isExitin
     }
   }, [inRoom]);
 
-
   // TODO: If chatting, guy's mouth moves
-  useEffect(() => {
-    if (isEntering) {
-      getGroqChatCompletion().then(setGroqResponse);
-    } else if (isExiting) {
-      setGroqResponse('');
-    }
-  }, [isEntering, isExiting]);
 
   return (
     <group>
@@ -85,19 +54,20 @@ export default function Room({ roomId, color, gltf, inRoom, isEntering, isExitin
             anchorX="center" 
             anchorY="middle"
             scale={[0.5, 0.5, 0.5]}
-            maxWidth={10}  // This sets the maximum width of the text block
-            textAlign="left"  // This centers the text within its block
+            maxWidth={10}
+            textAlign="left"
             {...bold}
-        >
+          >
             {(isEntering || inPosition) && !isExiting ? groqResponse : ''}
-        </Text>
+          </Text>
           <group rotation={[0, 1, 0]} position={[-5, -11, 5]}>
             <Guy />
           </group>
           <group rotation={[0, -1, 0]} position={[5, -11, 5]}>
             <Guy torsoColor='#326ee1'/>
           </group>
-          <Table />
+        {/* <Table /> */}
+          <Gltf src="fiesta_tea-transformed.glb" scale={2} position={[0, -5, 4]} />
         </group>
         <Floor color={"#878790"} position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]} />
       </Physics>

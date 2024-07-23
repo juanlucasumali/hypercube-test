@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useThree, createPortal, useFrame } from '@react-three/fiber'
 import { Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
+import { useAppContext } from '../contexts/AppContext'
 
 const HUD: React.FC = () => {
   const { size, gl } = useThree()
@@ -11,14 +12,18 @@ const HUD: React.FC = () => {
   const [showInput, setShowInput] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [storedValue, setStoredValue] = useState('')
+  const { sendMessageToGroq, inRoom } = useAppContext();
 
   useEffect(() => {
     virtualCamera.current.position.z = 10
     virtualCamera.current.lookAt(0, 0, 0)
 
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'c') {
-        setShowInput(true)
+      if (inRoom) {
+        console.log("inRoom!",inRoom)
+        if (event.key === 'c' || event.key === 'C') {
+          setShowInput(true)
+        }
       }
     }
 
@@ -27,7 +32,7 @@ const HUD: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [inRoom])
 
   useFrame(() => {
     gl.autoClear = false
@@ -42,6 +47,7 @@ const HUD: React.FC = () => {
   const handleInputSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       setStoredValue(inputValue)
+      sendMessageToGroq(inputValue)
       setInputValue('')
       setShowInput(false)
     }
@@ -59,14 +65,14 @@ const HUD: React.FC = () => {
         {!showInput ? `Press 'c' to chat.` : `Pres 'return' when you're done!` }
       </Text>
       {showInput && (
-        <Html position={[0, 0, 0]}>
+        <Html position={[0, 0, -3]}>
           <input
             type="text"
             value={inputValue}
             onChange={handleInputChange}
             onKeyPress={handleInputSubmit}
             autoFocus
-            style={{ fontSize: '20px', padding: '5px' }}
+            style={{ fontSize: '20px', padding: '5px'}}
           />
         </Html>
       )}
