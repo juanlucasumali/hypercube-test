@@ -4,8 +4,12 @@ import Groq from 'groq-sdk';
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true });
 
 interface AppContextProps {
+  isEntering: boolean;
+  setIsEntering: (value: boolean) => void;
   inRoom: boolean;
   setInRoom: (value: boolean) => void;
+  isExiting: boolean;
+  setIsExiting: (value: boolean) => void;
   selectedRoom: string | null;
   setSelectedRoom: (room: string | null) => void;
   updateRoom: (roomId: string) => void;
@@ -16,8 +20,12 @@ interface AppContextProps {
 }
 
 const defaultState = {
+  isEntering: false,
+  setIsEntering: () => {},
   inRoom: false,
   setInRoom: () => {},
+  isExiting: false,
+  setIsExiting: () => {},
   selectedRoom: null,
   setSelectedRoom: () => {},
   updateRoom: () => {},
@@ -34,7 +42,9 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+  const [isEntering, setIsEntering] = useState<boolean>(false);
   const [inRoom, setInRoom] = useState<boolean>(false);
+  const [isExiting, setIsExiting] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [groqResponse, setGroqResponse] = useState<string>('');
   const [conversationHistory, setConversationHistory] = useState<Groq.Chat.Completions.ChatCompletionMessageParam[]>([]);
@@ -44,7 +54,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     try {
       const updatedHistory: Groq.Chat.Completions.ChatCompletionMessageParam[] = [
         ...conversationHistory,
-        { role: 'user', content: message }
+        { role: 'user', content: message + 'Reply to me in 5 words or less.' }
       ];
       setConversationHistory(updatedHistory);
 
@@ -71,8 +81,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   return (
     <AppContext.Provider value={{ 
+      isEntering,
+      setIsEntering,
       inRoom, 
       setInRoom, 
+      isExiting,
+      setIsExiting,
       selectedRoom, 
       setSelectedRoom, 
       updateRoom, 

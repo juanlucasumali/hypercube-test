@@ -53,6 +53,10 @@ const HUD: React.FC = () => {
     }
   }
 
+  if (!inRoom) {
+    return null;
+  }
+
   return createPortal(
     <>
       <Text
@@ -62,7 +66,7 @@ const HUD: React.FC = () => {
         anchorX="center"
         anchorY="middle"
       >
-        {!showInput ? `Press 'c' to chat.` : `Pres 'return' when you're done!` }
+        {!showInput ? `Press [C] to chat.` : `Press [RETURN] when done!` }
       </Text>
       {showInput && (
         <Html position={[0, 0, -3]}>
@@ -76,7 +80,7 @@ const HUD: React.FC = () => {
           />
         </Html>
       )}
-      <Text
+      {/* <Text
         position={[0, -50, 0]}
         fontSize={20}
         color="black"
@@ -84,7 +88,7 @@ const HUD: React.FC = () => {
         anchorY="middle"
       >
         You said: "{storedValue}"
-      </Text>
+      </Text> */}
     </>,
     virtualScene
   )

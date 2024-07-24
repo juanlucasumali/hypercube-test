@@ -4,7 +4,7 @@ import React from 'react'
 import { Canvas } from '@react-three/fiber'
 import Camera from './components/Camera'
 import { Suspense } from "react";
-import MainMenu from './components/MainMenu';
+import Carousel from './components/Carousel';
 import HUD from './components/HUD';
 
 export default function Scene() {
@@ -17,7 +17,7 @@ export default function Scene() {
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <pointLight position={[-10, -10, -10]} />
         <HUD />
-        <MainMenu />
+        <Carousel />
       </Suspense>
     </Canvas>
   )

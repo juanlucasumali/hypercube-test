@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import { MeshPortalMaterial, PortalMaterialType, useCursor } from '@react-three/drei'
 import { gsap } from 'gsap'
 import Room from './Room'
+import { useAppContext } from '../contexts/AppContext'
 
 interface BoxProps {
   position: [number, number, number]
@@ -26,10 +27,9 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   const [hovered, setHover] = useState(false)
   const portalMaterial = useRef<PortalMaterialType>(null!);
   const roomRef = useRef<THREE.Group>(null)
-  const [isEntering, setIsEntering] = useState(false)
-  const [isExiting, setIsExiting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { camera } = useThree()
+  const { setIsEntering, isEntering, setIsExiting, isExiting } = useAppContext();
   useCursor(hovered && isFocused && !isEntering && !isOpen)
 
   const { scale, positionX, positionY, positionZ } = useSpring({

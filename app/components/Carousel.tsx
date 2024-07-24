@@ -5,6 +5,10 @@ import { Gltf, Text } from '@react-three/drei'
 import { useSpring, animated } from '@react-spring/three'
 import Box from './Box'
 import Room from './Room'
+import { useAppContext } from '../contexts/AppContext'
+import { useFrame } from '@react-three/fiber'
+import { gsap } from 'gsap'
+
 interface BoxData {
     id: string
     hoverText: string
@@ -15,7 +19,7 @@ interface BoxData {
     roomScene?: string
   }
   
-  interface MainMenuProps {
+  interface CarouselProps {
   }
   
   const dummyBoxData: BoxData[] = [
@@ -27,12 +31,42 @@ interface BoxData {
       { id: 'teapot2', hoverText: 'Blue', color: "#e4cdac", child: <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} /> },
       { id: 'cucumber3', hoverText: 'Green', color: "#e4cdac", child: <Gltf src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb" scale={8} position={[0, -0.7, -2]} /> },
   ]
-const AnimatedGroup = animated.group
 
-export default function MainMenu({ }: MainMenuProps) {
+const AnimatedGroup = animated.group
+const AnimatedText = animated(Text);
+
+export default function Carousel({ }: CarouselProps) {
     const [text, setText] = useState('')
     const [rotationIndex, setRotationIndex] = useState(0)
     const [focusedIndex, setFocusedIndex] = useState(0)
+    const { onTitleScreen } = useAppContext();
+    const missionTextRef = useRef()
+    const bottomGroupRef = useRef()
+    const boxesGroupRef = useRef()
+    
+
+    // TODO: Make the boxes bob with gsap
+    useEffect(() => {
+        if (!onTitleScreen) {
+            gsap.to(missionTextRef.current.position, {
+                y: 2.7,
+                duration: 1,
+                ease: 'power2.out'
+            });
+
+            gsap.to(bottomGroupRef.current.position, {
+                y: -1,
+                duration: 1.5,
+                ease: 'power2.out'
+            });
+
+            gsap.to(boxesGroupRef.current.position, {
+                y: 0,
+                duration: 1.5,
+                ease: 'power2.out'
+            });
+        }
+    }, [onTitleScreen]);
 
     const boxCount = dummyBoxData.length
     const angleStep = (2 * Math.PI) / boxCount
@@ -62,8 +96,8 @@ export default function MainMenu({ }: MainMenuProps) {
         config: { mass: 5, tension: 500, friction: 150 }
     })
 
-    const rotateLeft = () => setRotationIndex((prevIndex) => prevIndex + 1)
-    const rotateRight = () => setRotationIndex((prevIndex) => prevIndex - 1)
+    const rotateLeft = () => {setRotationIndex((prevIndex) => prevIndex - 1)}
+    const rotateRight = () => {setRotationIndex((prevIndex) => prevIndex + 1)}
 
     useEffect(() => {
         const newFocusedIndex = Math.round(rotationIndex) % boxCount
@@ -74,17 +108,20 @@ export default function MainMenu({ }: MainMenuProps) {
     
     return (
         <group position={[0, 0, -3]} rotation={[0, 0, 0]}>
-            <Text 
-                position={[0, 3, 0]}
+            <AnimatedText 
+                ref={missionTextRef}
+                position-y={5}
+                position-x={0}
+                position-z={0}
                 color="black" 
                 anchorX="center" 
                 anchorY="middle"
-                scale={[0.5, 0.5, 0.5]}
+                scale={[0.3, 0.3, 0.3]}
                 {...bold}
             >
-                CONSIDER THIS:
-            </Text>
-            <AnimatedGroup rotation-y={rotation} position={[0, 0, 3]}>
+                CHOOSE YOUR MISSION:
+            </AnimatedText>
+            <AnimatedGroup ref={boxesGroupRef} rotation-y={rotation} position={[0, -10, 3]}>
             {boxesWithPositions.map((box, index) => {
                 return (
                     <Box 
@@ -102,9 +139,8 @@ export default function MainMenu({ }: MainMenuProps) {
                     />
                 )
             })}
-
             </AnimatedGroup>
-            <group position={[0, -1, 1.5]}>
+            <group ref={bottomGroupRef} position={[0, -5, 1.5]}>
                 <Text
                     position={[-0.9, -0.05, 0]}
                     scale={[0.1, 0.1, 0.1]}

@@ -22,7 +22,12 @@ const config: Config = {
         light: '300',
         normal: '400',
         bold: '700',
-      }
+      },
+      colors: {
+        background: '#F4EDD8',
+        secondary: '#989486',
+        accent: '#ee8822',
+      },
     },
   },
   plugins: [],

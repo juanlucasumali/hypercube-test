@@ -3,7 +3,7 @@
 import ClientOnly from './components/ClientOnly'
 import Scene from './App'
 import { AppProvider, useAppContext } from './contexts/AppContext'
-import { Underlay } from './components/Underlay'
+import { TitleScreen } from './components/TitleScreen'
 
 function HomeContent() {
   const { onTitleScreen } = useAppContext();
@@ -11,7 +11,7 @@ function HomeContent() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="w-full z-0 h-screen">
-        <Underlay />
+        <TitleScreen />
         <ClientOnly>
           {!onTitleScreen && <Scene />}
         </ClientOnly>
