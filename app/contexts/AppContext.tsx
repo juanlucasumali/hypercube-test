@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useContext, useRef } from 'react';
 import Groq from 'groq-sdk';
 import RecordRTC from 'recordrtc';
+import useIsClient from '../hooks/useIsClient';
 
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true });
 
@@ -67,8 +68,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
   const recorder = useRef<RecordRTC | null>(null);
+  const isClient = useIsClient();
 
   const startRecording = async () => {
+    if (!isClient) return;
     setIsRecording(true);
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recorder.current = new RecordRTC(stream, {
@@ -83,6 +86,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   const stopRecording = async () => {
+    if (!isClient) return;
     setIsRecording(false);
     if (recorder.current) {
       return new Promise<void>((resolve) => {
@@ -95,6 +99,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   const transcribeAudio = async (audioBlob: Blob) => {
+    if (!isClient) return;
     try {
       const file = new File([audioBlob], 'audio.webm', { type: 'audio/webm' });
       const transcriptionResponse = await groq.audio.transcriptions.create({
@@ -139,28 +144,30 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     console.log(`Updating room to: ${roomId}`);
   };
 
+  const contextValue = {
+    isEntering,
+    setIsEntering,
+    inRoom, 
+    setInRoom, 
+    isExiting,
+    setIsExiting,
+    selectedRoom, 
+    setSelectedRoom, 
+    updateRoom, 
+    sendMessageToGroq, 
+    groqResponse,
+    onTitleScreen,
+    setOnTitleScreen,
+    isRecording,
+    startRecording: isClient ? startRecording : async () => {},
+    stopRecording: isClient ? stopRecording : async () => {},
+    transcription,
+    carouselComplete,
+    setCarouselComplete,
+  };
+
   return (
-    <AppContext.Provider value={{ 
-      isEntering,
-      setIsEntering,
-      inRoom, 
-      setInRoom, 
-      isExiting,
-      setIsExiting,
-      selectedRoom, 
-      setSelectedRoom, 
-      updateRoom, 
-      sendMessageToGroq, 
-      groqResponse,
-      onTitleScreen,
-      setOnTitleScreen,
-      isRecording,
-      startRecording,
-      stopRecording,
-      transcription,
-      carouselComplete,
-      setCarouselComplete,
-    }}>
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );
