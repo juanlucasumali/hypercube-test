@@ -29,7 +29,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   const roomRef = useRef<THREE.Group>(null)
   const [isOpen, setIsOpen] = useState(false)
   const { camera } = useThree()
-  const { setIsEntering, isEntering, setIsExiting, isExiting } = useAppContext();
+  const { setIsEntering, isEntering, setIsExiting, isExiting, carouselComplete } = useAppContext();
   useCursor(hovered && isFocused && !isEntering && !isOpen)
 
   const { scale, positionX, positionY, positionZ } = useSpring({
@@ -47,7 +47,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
   })
 
   const handleClick = () => {
-    if (!isOpen) {
+    if (!isOpen && carouselComplete) {
       setIsEntering(true);
     } else {
       setIsExiting(true);
@@ -80,7 +80,7 @@ export default function Box({ position, onHover, color, child, boxColor, roomCol
     >
       <mesh
         ref={ref}
-        onPointerOver={() => { setHover(true); onHover(); }}
+        onPointerOver={() => { carouselComplete && setHover(true); carouselComplete && onHover(); }}
         onPointerOut={() => setHover(false)}
         onClick={isFocused && !isEntering ? handleClick : () => {}}
       >

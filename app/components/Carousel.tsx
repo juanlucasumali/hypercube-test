@@ -43,6 +43,7 @@ export default function Carousel({ }: CarouselProps) {
     const missionTextRef = useRef<any>(!null)
     const bottomGroupRef = useRef<any>(!null)
     const boxesGroupRef = useRef<any>(!null)
+    const { setCarouselComplete } = useAppContext();
     
 
     // TODO: Make the boxes bob with gsap
@@ -53,20 +54,19 @@ export default function Carousel({ }: CarouselProps) {
                 y: 0,
                 duration: 1,
                 ease: 'bounce.out',
-                onComplete: () => {
-                    // After boxes animation is complete, animate other elements
-                    gsap.to(missionTextRef.current.position, {
-                        y: 2.7,
-                        duration: 1.5,
-                        ease: 'steps.out'
-                    });
-    
-                    gsap.to(bottomGroupRef.current.position, {
-                        y: -1,
-                        duration: 1.5,
-                        ease: 'steps.out'
-                    });
-                }
+            });
+
+            gsap.to(missionTextRef.current.position, {
+                y: 2.7,
+                duration: 1.5,
+                ease: 'steps.out'
+            });
+
+            gsap.to(bottomGroupRef.current.position, {
+                y: -1,
+                duration: 1.5,
+                ease: 'steps.out',
+                onComplete: () => {setCarouselComplete(true)}
             });
         }
     }, [onTitleScreen]);

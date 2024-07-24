@@ -22,6 +22,9 @@ interface AppContextProps {
   startRecording: () => Promise<void>;
   stopRecording: () => Promise<void>;
   transcription: string;
+  carouselComplete: boolean;
+  setCarouselComplete: (value: boolean) => void;
+
 }
 
 const defaultState = {
@@ -42,6 +45,8 @@ const defaultState = {
   startRecording: async () => {},
   stopRecording: async () => {},
   transcription: '',
+  carouselComplete: false,
+  setCarouselComplete: () => {},
 };
 
 export const AppContext = createContext<AppContextProps>(defaultState);
@@ -53,6 +58,7 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isEntering, setIsEntering] = useState<boolean>(false);
   const [inRoom, setInRoom] = useState<boolean>(false);
+  const [carouselComplete, setCarouselComplete] = useState<boolean>(false);
   const [isExiting, setIsExiting] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [groqResponse, setGroqResponse] = useState<string>('');
@@ -152,6 +158,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       startRecording,
       stopRecording,
       transcription,
+      carouselComplete,
+      setCarouselComplete,
     }}>
       {children}
     </AppContext.Provider>
