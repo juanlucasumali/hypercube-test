@@ -1,7 +1,5 @@
-import React, { createContext, useState, ReactNode, useContext, useRef } from 'react';
+import React, { createContext, useState, ReactNode, useContext } from 'react';
 import Groq from 'groq-sdk';
-import RecordRTC from 'recordrtc';
-import useIsClient from '../hooks/useIsClient';
 
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true });
 
@@ -19,13 +17,8 @@ interface AppContextProps {
   groqResponse: string;
   onTitleScreen: boolean;
   setOnTitleScreen: (value: boolean) => void;
-  isRecording: boolean;
-  startRecording: () => Promise<void>;
-  stopRecording: () => Promise<void>;
-  transcription: string;
   carouselComplete: boolean;
   setCarouselComplete: (value: boolean) => void;
-
 }
 
 const defaultState = {
@@ -42,10 +35,6 @@ const defaultState = {
   groqResponse: '',
   onTitleScreen: true,
   setOnTitleScreen: () => {},
-  isRecording: false,
-  startRecording: async () => {},
-  stopRecording: async () => {},
-  transcription: '',
   carouselComplete: false,
   setCarouselComplete: () => {},
 };
@@ -59,61 +48,12 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isEntering, setIsEntering] = useState<boolean>(false);
   const [inRoom, setInRoom] = useState<boolean>(false);
-  const [carouselComplete, setCarouselComplete] = useState<boolean>(false);
   const [isExiting, setIsExiting] = useState<boolean>(false);
+  const [carouselComplete, setCarouselComplete] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [groqResponse, setGroqResponse] = useState<string>('');
   const [conversationHistory, setConversationHistory] = useState<Groq.Chat.Completions.ChatCompletionMessageParam[]>([]);
   const [onTitleScreen, setOnTitleScreen] = useState<boolean>(true);
-  const [isRecording, setIsRecording] = useState(false);
-  const [transcription, setTranscription] = useState('');
-  const recorder = useRef<RecordRTC | null>(null);
-  const isClient = useIsClient();
-
-  const startRecording = async () => {
-    if (!isClient) return;
-    setIsRecording(true);
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    recorder.current = new RecordRTC(stream, {
-      type: 'audio',
-      mimeType: 'audio/webm',
-      sampleRate: 44100,
-      desiredSampRate: 16000,
-      recorderType: RecordRTC.StereoAudioRecorder,
-      numberOfAudioChannels: 1,
-    });
-    recorder.current.startRecording();
-  };
-
-  const stopRecording = async () => {
-    if (!isClient) return;
-    setIsRecording(false);
-    if (recorder.current) {
-      return new Promise<void>((resolve) => {
-        recorder.current!.stopRecording(() => {
-          const blob = recorder.current!.getBlob();
-          transcribeAudio(blob).then(resolve);
-        });
-      });
-    }
-  };
-
-  const transcribeAudio = async (audioBlob: Blob) => {
-    if (!isClient) return;
-    try {
-      const file = new File([audioBlob], 'audio.webm', { type: 'audio/webm' });
-      const transcriptionResponse = await groq.audio.transcriptions.create({
-        file: file,
-        model: "whisper-large-v3",
-        language: "en",
-      });
-      console.log(transcriptionResponse.text);
-      setTranscription(transcriptionResponse.text);
-      await sendMessageToGroq(transcriptionResponse.text);
-    } catch (error) {
-      console.error('Error transcribing audio:', error);
-    }
-  };
 
   const sendMessageToGroq = async (message: string) => {
     try {
@@ -144,30 +84,24 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     console.log(`Updating room to: ${roomId}`);
   };
 
-  const contextValue = {
-    isEntering,
-    setIsEntering,
-    inRoom, 
-    setInRoom, 
-    isExiting,
-    setIsExiting,
-    selectedRoom, 
-    setSelectedRoom, 
-    updateRoom, 
-    sendMessageToGroq, 
-    groqResponse,
-    onTitleScreen,
-    setOnTitleScreen,
-    isRecording,
-    startRecording: isClient ? startRecording : async () => {},
-    stopRecording: isClient ? stopRecording : async () => {},
-    transcription,
-    carouselComplete,
-    setCarouselComplete,
-  };
-
   return (
-    <AppContext.Provider value={contextValue}>
+    <AppContext.Provider value={{ 
+      isEntering,
+      setIsEntering,
+      inRoom, 
+      setInRoom, 
+      isExiting,
+      setIsExiting,
+      selectedRoom, 
+      setSelectedRoom, 
+      updateRoom, 
+      sendMessageToGroq, 
+      groqResponse,
+      onTitleScreen,
+      setOnTitleScreen,
+      carouselComplete,
+      setCarouselComplete,
+    }}>
       {children}
     </AppContext.Provider>
   );
