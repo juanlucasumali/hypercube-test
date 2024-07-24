@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useThree, createPortal, useFrame } from '@react-three/fiber'
-import { Text, Html } from '@react-three/drei'
+import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 import { useAppContext } from '../contexts/AppContext'
 
@@ -9,20 +9,19 @@ const HUD: React.FC = () => {
   const virtualScene = useRef(new THREE.Scene()).current
   const virtualCamera = useRef(new THREE.OrthographicCamera(-size.width / 2, size.width / 2, size.height / 2, -size.height / 2, 0.1, 1000))
   
-  const [showInput, setShowInput] = useState(false)
-  const [inputValue, setInputValue] = useState('')
-  const [storedValue, setStoredValue] = useState('')
-  const { sendMessageToGroq, inRoom } = useAppContext();
+  const { isRecording, startRecording, stopRecording, transcription, inRoom } = useAppContext()
 
   useEffect(() => {
     virtualCamera.current.position.z = 10
     virtualCamera.current.lookAt(0, 0, 0)
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (inRoom) {
-        console.log("inRoom!",inRoom)
-        if (event.key === 'c' || event.key === 'C') {
-          setShowInput(true)
+    const handleKeyPress = async (event: KeyboardEvent) => {
+      if (inRoom && event.code === 'Space') {
+        event.preventDefault()
+        if (!isRecording) {
+          await startRecording()
+        } else {
+          await stopRecording()
         }
       }
     }
@@ -32,7 +31,7 @@ const HUD: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [inRoom])
+  }, [inRoom, isRecording, startRecording, stopRecording])
 
   useFrame(() => {
     gl.autoClear = false
@@ -40,21 +39,8 @@ const HUD: React.FC = () => {
     gl.render(virtualScene, virtualCamera.current)
   }, 10)
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
-  }
-
-  const handleInputSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      setStoredValue(inputValue)
-      sendMessageToGroq(inputValue)
-      setInputValue('')
-      setShowInput(false)
-    }
-  }
-
   if (!inRoom) {
-    return null;
+    return null
   }
 
   return createPortal(
@@ -66,29 +52,19 @@ const HUD: React.FC = () => {
         anchorX="center"
         anchorY="middle"
       >
-        {!showInput ? `Press [C] to chat.` : `Press [RETURN] when done!` }
+        {!isRecording ? `Press [SPACE] to start speaking.` : `Press [SPACE] to stop speaking.` }
       </Text>
-      {showInput && (
-        <Html position={[0, 0, -3]}>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyPress={handleInputSubmit}
-            autoFocus
-            style={{ fontSize: '20px', padding: '5px'}}
-          />
-        </Html>
-      )}
-      {/* <Text
+      <Text
         position={[0, -50, 0]}
         fontSize={20}
         color="black"
         anchorX="center"
         anchorY="middle"
+        maxWidth={300}
+        textAlign="center"
       >
-        You said: "{storedValue}"
-      </Text> */}
+        {transcription || "Your speech will appear here..."}
+      </Text>
     </>,
     virtualScene
   )

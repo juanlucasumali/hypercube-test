@@ -67,7 +67,7 @@ const inPosition = camera.position.z === -3
             <Guy torsoColor='#326ee1'/>
           </group>
         {/* <Table /> */}
-          <Gltf src="fiesta_tea-transformed.glb" scale={2} position={[0, -5, 4]} />
+          <Gltf src="fiesta_tea-transformed.glb" scale={3} position={[0, -8, 3]} />
         </group>
         <Floor color={"#878790"} position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]} />
       </Physics>
