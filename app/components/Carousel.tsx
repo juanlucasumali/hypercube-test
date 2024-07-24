@@ -48,22 +48,25 @@ export default function Carousel({ }: CarouselProps) {
     // TODO: Make the boxes bob with gsap
     useEffect(() => {
         if (!onTitleScreen) {
-            gsap.to(missionTextRef.current.position, {
-                y: 2.7,
-                duration: 1,
-                ease: 'power2.out'
-            });
-
-            gsap.to(bottomGroupRef.current.position, {
-                y: -1,
-                duration: 1.5,
-                ease: 'power2.out'
-            });
-
+            // First, animate the boxes
             gsap.to(boxesGroupRef.current.position, {
                 y: 0,
-                duration: 1.5,
-                ease: 'power2.out'
+                duration: 1,
+                ease: 'bounce.out',
+                onComplete: () => {
+                    // After boxes animation is complete, animate other elements
+                    gsap.to(missionTextRef.current.position, {
+                        y: 2.7,
+                        duration: 1.5,
+                        ease: 'steps.out'
+                    });
+    
+                    gsap.to(bottomGroupRef.current.position, {
+                        y: -1,
+                        duration: 1.5,
+                        ease: 'steps.out'
+                    });
+                }
             });
         }
     }, [onTitleScreen]);
@@ -121,7 +124,7 @@ export default function Carousel({ }: CarouselProps) {
             >
                 CHOOSE YOUR MISSION:
             </AnimatedText>
-            <AnimatedGroup ref={boxesGroupRef} rotation-y={rotation} position={[0, -10, 3]}>
+            <AnimatedGroup ref={boxesGroupRef} rotation-y={rotation} position={[0, 15, 3]}>
             {boxesWithPositions.map((box, index) => {
                 return (
                     <Box 
