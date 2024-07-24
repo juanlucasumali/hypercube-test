@@ -40,9 +40,9 @@ export default function Carousel({ }: CarouselProps) {
     const [rotationIndex, setRotationIndex] = useState(0)
     const [focusedIndex, setFocusedIndex] = useState(0)
     const { onTitleScreen } = useAppContext();
-    const missionTextRef = useRef()
-    const bottomGroupRef = useRef()
-    const boxesGroupRef = useRef()
+    const missionTextRef = useRef<any>(!null)
+    const bottomGroupRef = useRef<any>(!null)
+    const boxesGroupRef = useRef<any>(!null)
     
 
     // TODO: Make the boxes bob with gsap
