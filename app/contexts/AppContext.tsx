@@ -53,7 +53,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [groqResponse, setGroqResponse] = useState<string>('');
   const [conversationHistory, setConversationHistory] = useState<Groq.Chat.Completions.ChatCompletionMessageParam[]>([]);
-  const [onTitleScreen, setOnTitleScreen] = useState<boolean>(true);
+  const [onTitleScreen, setOnTitleScreen] = useState<boolean>(false);
 
   const sendMessageToGroq = async (message: string) => {
     try {
