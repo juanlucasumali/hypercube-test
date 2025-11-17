@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode, useContext } from 'react';
 import Groq from 'groq-sdk';
 
 const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true });
+const modelId = process.env.NEXT_PUBLIC_MODEL_ID
 
 interface AppContextProps {
   isEntering: boolean;
@@ -65,7 +66,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       const response = await groq.chat.completions.create({
         messages: updatedHistory,
-        model: "llama3-8b-8192",
+        model: modelId,
       });
 
       const assistantResponse = response.choices[0]?.message?.content || "";
